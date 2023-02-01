@@ -19,9 +19,10 @@ public class Jdbc {
 
         System.out.println(System.currentTimeMillis());
 
-        SetSQL setter = SetSQL.use(SQLSchema.connectToDatabase(JDBCConfig.getConnection()))
+        SetSQL setter = SetSQL.using(SQLSchema.connectToDatabase(JDBCConfig.getConnection()))
                 .setSQLStatement("select * from role")
-                .setColumnNames(new String[]{"role_name"});
+                .setColumnNames(new String[]{"role_name"})
+                .setTotalRows(2);
 
         SQLActions action = new Actions(setter);
         System.out.println(action.query());

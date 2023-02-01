@@ -8,5 +8,6 @@
  *      Công dụng : Triển khai các method implement.
  * - Adaptee : class SetSQL.
  *      Công dụng : Thiết lập các điều kiện.
+ * Áp dung Object Pool Pattern để kiểm soát đóng mở database.
  */
 package jdbc.sql.data;

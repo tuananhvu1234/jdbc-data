@@ -19,12 +19,12 @@ public class SetSQL {
 
     private static Connection connection = null;
 
-    public static SetSQL use(SQLSchema schema) {
+    public static SetSQL using(SQLSchema schema) {
         SetSQL.connection = schema.getConnection();
         return SetSQLInstance.INSTANCE;
     }
 
-    public static SetSQL use(Connection connection) {
+    public static SetSQL using(Connection connection) {
         SetSQL.connection = connection;
         return SetSQLInstance.INSTANCE;
     }
