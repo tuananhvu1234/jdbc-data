@@ -7,82 +7,87 @@ import com.mycompany.jdbc.sql.elements.SQLDatabase;
  *
  * @author
  */
-public class SQLSetter {
+public class SqlSetter {
 
     // Singleton Pattern
     // Hạn chế tiếp cận bằng constructor
-    private SQLSetter() {
-    }
-
-    private static class SetSQLInstance {
-
-        private static final SQLSetter INSTANCE = new SQLSetter(); // Tạo instance
+    private SqlSetter() {
     }
 
     // Tạo connection
     private static Connection connection = null;
 
     // Thiết lập giá trị cho connection
-    public static SQLSetter using(SQLDatabase schema) {
-        SQLSetter.connection = schema.getConnection();
-        return SetSQLInstance.INSTANCE;
+    public static SqlSetter using(SQLDatabase schema) {
+        SqlSetter.connection = schema.getConnection();
+        return new SqlSetter();
     }
 
-    public static SQLSetter using(Connection connection) {
-        SQLSetter.connection = connection;
-        return SetSQLInstance.INSTANCE;
+    public static SqlSetter using(Connection connection) {
+        SqlSetter.connection = connection;
+        return new SqlSetter();
     }
 
     // Tạo biến lưu trữ câu lệnh sql
     private String SQLStatement = "";
 
     // Thiết lập câu lệnh sql.
-    public SQLSetter setSQLStatement(String sql) {
+    public SqlSetter setSQLStatement(String sql) {
         this.SQLStatement = sql;
-        return SetSQLInstance.INSTANCE;
+        return new SqlSetter();
     }
 
     // Biến lưu giữ các giá trị cần thiết lập
     private Object[] preparedStatementValues = new Object[]{};
 
-    public SQLSetter setPreparedStatementValues(Object[] preparedStatementValues) {
+    public SqlSetter setPreparedStatementValues(Object[] preparedStatementValues) {
         this.preparedStatementValues = preparedStatementValues;
-        return SetSQLInstance.INSTANCE;
+        return new SqlSetter();
     }
 
     // Tổng số cột cần lấy ra
     private int totalColumns = 0;
 
-    public SQLSetter setTotalColumns(int totalColumns) {
+    public SqlSetter setTotalColumns(int totalColumns) {
         this.totalColumns = totalColumns;
-        return SetSQLInstance.INSTANCE;
+        return new SqlSetter();
     }
 
     // Vị trí các cột cần lấy ra
     private int[] columnsIndex = new int[]{};
 
-    public SQLSetter setColumnsIndex(int[] columnsIndex) {
+    public SqlSetter setColumnsIndex(int[] columnsIndex) {
         this.columnsIndex = columnsIndex;
-        return SetSQLInstance.INSTANCE;
+        return new SqlSetter();
     }
 
-    // Tên các cột cần lấy ra
+    // Tên các cột cần lấy ra.
     private String[] columnNames = new String[]{};
 
-    public SQLSetter setColumnNames(String[] columnNames) {
+    public SqlSetter setColumnNames(String[] columnNames) {
         this.columnNames = columnNames;
-        return SetSQLInstance.INSTANCE;
+        return new SqlSetter();
     }
 
-    // Tổng số dòng cần lây ra
+    // Tổng số dòng cần lây ra.
+    // Nếu nhỏ hơn 0 thì sẽ lấy tất cả.
     private int totalRows = -1;
 
-    public SQLSetter setTotalRows(int totalRows) {
+    public SqlSetter setTotalRows(int totalRows) {
         this.totalRows = totalRows;
-        return SetSQLInstance.INSTANCE;
+        return new SqlSetter();
     }
 
-    // Các method chỉ cho phép các class trong package sử dụng.
+    // Vị trí dòng đầu lấy ra
+    // Nếu nhỏ hơn hoặc bằng 0 thì sẽ lấy từ 0
+    private int offsetRow = 0;
+
+    public SqlSetter setOffsetRow(int offsetRow) {
+        this.offsetRow = offsetRow;
+        return new SqlSetter();
+    }
+
+    // Các method getter sẽ chỉ cho phép các class trong package sử dụng.
     Connection getConnection() {
         return connection;
     }
@@ -109,6 +114,10 @@ public class SQLSetter {
 
     int getTotalRows() {
         return totalRows;
+    }
+
+    int getOffsetRow() {
+        return offsetRow;
     }
 
 }

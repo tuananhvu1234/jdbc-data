@@ -14,18 +14,32 @@ import java.util.logging.Logger;
  *
  * @author DELL
  */
-public class SQLActions
-        implements AbstractSQLActions {
+public class SqlActions
+        implements AbstractSqlActions {
 
-    private final SQLSetter setSQL;
+    /**
+     * Các điều kiện để thực hiện câu lệnh sql sẽ được lấy ra từ class SqlSetter
+     */
+    private final SqlSetter setSQL;
+
+    /**
+     * Khai báo PreparedStatement và ResultSet
+     */
     private PreparedStatement preparedStatement = null;
     private ResultSet resultSet = null;
 
-    public SQLActions(SQLSetter setSQL) {
+    /**
+     * Đối tượng yêu cầu đầu vào là class SqlSetter.
+     *
+     * @param setSQL Các giá trị đã được thiết lập để thực hiện.
+     */
+    public SqlActions(SqlSetter setSQL) {
         this.setSQL = setSQL;
     }
 
-    // Hoàn thiện câu sql với prepared statement
+    /**
+     * Hoàn thiện câu sql với prepared statement
+     */
     private PreparedStatement completePreparedStatement(PreparedStatement pstm)
             throws SQLException {
         for (int i = 0; i < setSQL.getPreparedStatementValues().length; i++) {
@@ -34,7 +48,10 @@ public class SQLActions
         return pstm;
     }
 
-    // Thiết lập và lấy ra giá trị của preparedStatement
+    /**
+     * Thiết lập các giá trị cho preparedStatement và lấy ra giá trị của
+     * preparedStatement sau khi thiết lập hoàn tất.
+     */
     private PreparedStatement setAndGetPreparedStatement()
             throws SQLException {
         preparedStatement = setSQL.getConnection()
@@ -42,10 +59,18 @@ public class SQLActions
         return completePreparedStatement(preparedStatement);
     }
 
+    /**
+     * Chuyển đổi tổng số cột thành danh sách vị trí các cột cânf lấy dữ liệu.
+     * Danh sách vị trí các cột sẽ bắt đầu từ 1 tương đương vói cột đầu tiên của
+     * bảng trong database.
+     *
+     * @return Danh sách vị trí các cột cần lấy dữ liệu.
+     * @throws SQLException
+     */
     private int[] convertTotalColumnsToColumnsIndex()
             throws SQLException {
         int totalCol;
-        if (setSQL.getTotalColumns() == 0) {
+        if (setSQL.getTotalColumns() <= 0) {
             totalCol = resultSet.getMetaData().getColumnCount();
         } else {
             totalCol = setSQL.getTotalColumns();
@@ -59,6 +84,13 @@ public class SQLActions
         return listInt;
     }
 
+    /**
+     * Chuyển đổi từ danh sách vị trí các cột sang danh sách tên các cột cần lấy
+     * dữ liệu.
+     *
+     * @return Danh sách tên các cột cần lấy dữ liệu.
+     * @throws SQLException
+     */
     private String[] convertColumnsIndexToColumnNames()
             throws SQLException {
         int[] listIndex;
@@ -76,6 +108,13 @@ public class SQLActions
         return listNames;
     }
 
+    /**
+     * Lấy ra dữ liệu của một dòng.
+     *
+     * @param rs
+     * @return Dữ liệu của một dòng theo tên cột.
+     * @throws SQLException
+     */
     private Map<String, Object> getRowData(ResultSet rs)
             throws SQLException {
         String[] columnNames;
@@ -97,16 +136,18 @@ public class SQLActions
         try {
             resultSet = setAndGetPreparedStatement().executeQuery();
             int rows = 0;
-            while (resultSet.next()) {
-                if (rows == setSQL.getTotalRows()) {
-                    return result;
-                } else {
-                    result.add(getRowData(resultSet));
-                    rows++;
+            while (resultSet.next() == true) {
+                if (rows >= setSQL.getOffsetRow()) {
+                    if (rows == setSQL.getTotalRows()) {
+                        return result;
+                    } else {
+                        result.add(getRowData(resultSet));
+                    }
                 }
+                rows++;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(SQLActions.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SqlActions.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             closeDatabase();
         }
@@ -120,28 +161,31 @@ public class SQLActions
                 return true;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(SQLActions.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SqlActions.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             closeDatabase();
         }
         return false;
     }
 
+    /**
+     * Thực hiện công việc đóng các field liên quan đến database.
+     */
     private void closeDatabase() {
         try {
             resultSet.close();
         } catch (SQLException ex) {
-            Logger.getLogger(SQLActions.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SqlActions.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             preparedStatement.close();
         } catch (SQLException ex) {
-            Logger.getLogger(SQLActions.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SqlActions.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             setSQL.getConnection().close();
         } catch (SQLException ex) {
-            Logger.getLogger(SQLActions.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SqlActions.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

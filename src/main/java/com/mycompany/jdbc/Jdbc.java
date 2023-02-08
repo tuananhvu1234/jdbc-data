@@ -16,13 +16,12 @@ import com.mycompany.jdbc.clause.type.JoinType;
 import com.mycompany.jdbc.clause.type.MysqlJoinType;
 import com.mycompany.jdbc.helper.StringConvertor;
 import com.mycompany.jdbc.connection.JDBCConnectionPool;
-import com.mycompany.jdbc.sql.data.SQLActions;
-import com.mycompany.jdbc.sql.data.SQLSetter;
+import com.mycompany.jdbc.sql.data.SqlActions;
+import com.mycompany.jdbc.sql.data.SqlSetter;
 import com.mycompany.jdbc.sql.elements.SQLDatabase;
 import com.mycompany.jdbc.statement.builder.SqlStatementBuilder;
 import com.mycompany.jdbc.sql.type.DatabaseType;
 import com.mycompany.jdbc.sql.type.StatementType;
-import com.mycompany.jdbc.sql.data.AbstractSQLActions;
 import com.mycompany.jdbc.sql.elements.SQLColumn;
 import com.mycompany.jdbc.sql.elements.SQLTable;
 import com.mycompany.jdbc.statement.builder.AbstractStatementBuilder;
@@ -32,6 +31,8 @@ import com.mycompany.jdbc.sql.functions.MysqlFunctions;
 import com.mycompany.jdbc.sql.type.MysqlUnitArguments;
 import java.sql.Date;
 import com.mycompany.jdbc.clause.builder.AbstractJoinClause;
+import com.mycompany.jdbc.sql.data.AbstractSqlActions;
+import java.util.ArrayList;
 
 /**
  *
@@ -47,17 +48,28 @@ public class Jdbc {
 
         AbstractStatementBuilder builder = SqlStatementBuilder.building(DatabaseType.MYSQL);
 
-        MysqlQueryBuilder create = (MysqlQueryBuilder) builder.createQuery();
+        JDBCConnectionPool pool = new JDBCConnectionPool() {
+            @Override
+            public void actionWhileWaiting() {
+                System.out.println("wait");
+            }
+        };
+        pool.setProperties(JDBCConfig.DRIVER,
+                JDBCConfig.URL,
+                JDBCConfig.USERNAME,
+                JDBCConfig.PASSWORD);
 
-//        System.out.println(create.preparedFormat("`abc`"));
-//        
-        create.select(new String[]{"role_id", "role_name"}).from("role");
-        
-        System.out.println(create.get());
-        
-        System.out.println(SqlOperators.and(SqlOperators.like("abc", "def")));
-        
-//
+        SqlSetter setter = SqlSetter.using(JDBCConfig.getConnection());
+        setter.setSQLStatement("select * from role");
+//        setter.setTotalRows(1);
+        setter.setOffsetRow(2);
+
+        SqlActions action = new SqlActions(setter);
+
+        ArrayList arr = action.query();
+
+        System.out.println(arr);
+
         System.out.println(end = System.currentTimeMillis());
 
         System.out.println((end - start) + " ms");
