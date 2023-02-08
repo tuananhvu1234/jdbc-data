@@ -1,13 +1,37 @@
 package com.mycompany.jdbc;
 
+import com.mycompany.jdbc.*;
+import com.mycompany.jdbc.clause.builder.*;
+
 import Database.jdbc.JDBCConfig;
-import jdbc.sql.data.Actions;
-import jdbc.sql.data.SetSQL;
-import jdbc.sql.elements.SQLSchema;
-import jdbc.statement.builder.SQLStatementBuilder;
-import jdbc.type.DatabaseType;
-import jdbc.type.StatementType;
-import jdbc.sql.data.SQLActions;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import com.mycompany.jdbc.clause.builder.AliasClause;
+import com.mycompany.jdbc.clause.builder.SqlOperators;
+import com.mycompany.jdbc.clause.type.JoinType;
+import com.mycompany.jdbc.clause.type.MysqlJoinType;
+import com.mycompany.jdbc.helper.StringConvertor;
+import com.mycompany.jdbc.connection.JDBCConnectionPool;
+import com.mycompany.jdbc.sql.data.SQLActions;
+import com.mycompany.jdbc.sql.data.SQLSetter;
+import com.mycompany.jdbc.sql.elements.SQLDatabase;
+import com.mycompany.jdbc.statement.builder.SqlStatementBuilder;
+import com.mycompany.jdbc.sql.type.DatabaseType;
+import com.mycompany.jdbc.sql.type.StatementType;
+import com.mycompany.jdbc.sql.data.AbstractSQLActions;
+import com.mycompany.jdbc.sql.elements.SQLColumn;
+import com.mycompany.jdbc.sql.elements.SQLTable;
+import com.mycompany.jdbc.statement.builder.AbstractStatementBuilder;
+import com.mycompany.jdbc.statement.builder.query.MysqlQueryBuilder;
+import com.mycompany.jdbc.sql.functions.AbstractMysqlFunctions;
+import com.mycompany.jdbc.sql.functions.MysqlFunctions;
+import com.mycompany.jdbc.sql.type.MysqlUnitArguments;
+import java.sql.Date;
+import com.mycompany.jdbc.clause.builder.AbstractJoinClause;
 
 /**
  *
@@ -15,19 +39,27 @@ import jdbc.sql.data.SQLActions;
  */
 public class Jdbc {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
-        System.out.println(System.currentTimeMillis());
+        long start, end;
 
-        SetSQL setter = SetSQL.using(SQLSchema.connectToDatabase(JDBCConfig.getConnection()))
-                .setSQLStatement("select * from role")
-                .setColumnNames(new String[]{"role_name"})
-                .setTotalRows(2);
+        System.out.println(start = System.currentTimeMillis());
 
-        SQLActions action = new Actions(setter);
-        System.out.println(action.query());
+        AbstractStatementBuilder builder = SqlStatementBuilder.building(DatabaseType.MYSQL);
 
-        System.out.println(System.currentTimeMillis());
+        MysqlQueryBuilder create = (MysqlQueryBuilder) builder.createQuery();
 
+//        System.out.println(create.preparedFormat("`abc`"));
+//        
+        create.select(new String[]{"role_id", "role_name"}).from("role");
+        
+        System.out.println(create.get());
+        
+        System.out.println(SqlOperators.and(SqlOperators.like("abc", "def")));
+        
+//
+        System.out.println(end = System.currentTimeMillis());
+
+        System.out.println((end - start) + " ms");
     }
 }

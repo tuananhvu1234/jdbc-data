@@ -4,6 +4,7 @@ import java.sql.Connection;
 
 public interface JDBCConfig {
 
+    public static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     public static final String HOSTNAME = "localhost";
     public static final String PORT = "3306";
     public static final String DBNAME = "Pet_Clinic";
