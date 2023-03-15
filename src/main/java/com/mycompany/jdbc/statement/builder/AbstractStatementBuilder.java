@@ -11,5 +11,11 @@ public interface AbstractStatementBuilder {
 
     public AbstractQueryBuilder createQuery();
 
+    public AbstractQueryBuilder createInsert();
+
+    public AbstractQueryBuilder createUpdate();
+
+    public AbstractQueryBuilder createDelete();
+
     // createInsert, createUpdate, createDelete
 }

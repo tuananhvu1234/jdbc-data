@@ -13,7 +13,23 @@ public class MysqlStatementBuilder
 
     @Override
     public AbstractQueryBuilder createQuery() {
-        return new MysqlQueryBuilder();
+//        return new MysqlQueryBuilder();
+        return null;
+    }
+
+    @Override
+    public AbstractQueryBuilder createInsert() {
+        return null;
+    }
+
+    @Override
+    public AbstractQueryBuilder createUpdate() {
+        return null;
+    }
+
+    @Override
+    public AbstractQueryBuilder createDelete() {
+        return null;
     }
 
 }

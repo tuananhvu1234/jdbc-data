@@ -1,6 +1,8 @@
 package com.mycompany.jdbc.statement.builder.query;
 
-import com.mycompany.jdbc.sql.functions.AbstractSQLGenericFunctions;
+import com.mycompany.jdbc.activerecord.MappingColumn;
+import com.mycompany.jdbc.activerecord.MappingTable;
+import com.mycompany.jdbc.sql.functions.AbstractSqlGenericFunctions;
 
 /**
  *
@@ -11,9 +13,9 @@ public interface AbstractQueryBuilder {
     public String get();
 
     // select, select all, select distinct
-    public AbstractQueryBuilder select(String[] selectExpressions);
+    public AbstractQueryBuilder select(MappingColumn[] selectExpressions);
 
-    public AbstractQueryBuilder select(AbstractSQLGenericFunctions expression);
+    public AbstractQueryBuilder select(AbstractSqlGenericFunctions expression);
 
     /**
      * tableReference = tableFactor || joinedTable
@@ -24,7 +26,7 @@ public interface AbstractQueryBuilder {
      * @param tableReferences
      * @return
      */
-    public AbstractQueryBuilder from(String tableReferences);
+    public AbstractQueryBuilder from(MappingTable tableReferences);
 
     public AbstractQueryBuilder join(String joinedTable);
 

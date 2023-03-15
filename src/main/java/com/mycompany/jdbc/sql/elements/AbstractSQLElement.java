@@ -6,20 +6,7 @@ import java.sql.Connection;
  *
  * @author
  */
-public abstract class AbstractSQLElement {
-
-    protected boolean checkExistSubElement(
-            AbstractSQLElement element,
-            String subElementName
-    ) {
-        for (String subElmName : element.getAllSubElementNames()) {
-            if (subElmName.toLowerCase()
-                    .equals(subElementName.toLowerCase())) {
-                return true;
-            }
-        }
-        return false;
-    }
+public abstract class AbstractSqlElement {
 
     public abstract Connection getConnection();
 

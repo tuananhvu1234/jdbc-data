@@ -14,8 +14,6 @@
  *
  * Các class tham gia :
  *
- * Pattern lớn.
- *
  * Factory class : SqlStatementBuilder
  *
  * Công dụng của class : Lấy ra loại database cần build (mysql, mssql).(1)

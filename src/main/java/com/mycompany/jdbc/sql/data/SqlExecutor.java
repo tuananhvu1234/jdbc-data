@@ -1,25 +1,26 @@
 package com.mycompany.jdbc.sql.data;
 
-import java.util.ArrayList;
-import java.util.Map;
+import java.sql.SQLException;
 
 /**
  *
  * @author DELL
  */
-public interface AbstractSqlActions {
+public interface SqlExecutor {
 
     /**
      * Method thực hiện câu lệnh query.
      *
      * @return Danh sách dữ liệu theo tên cột.
+     * @throws java.sql.SQLException
      */
-    public ArrayList<Map<String, Object>> query();
+    public ResultTable executeQuery() throws SQLException;
 
     /**
      * Method thực hiện các câu lệnh liên quan việc thay đổi dữ liệu.
      *
      * @return Kết quả của việc thực hiện câu lệnh.
+     * @throws java.sql.SQLException
      */
-    public boolean update();
+    public boolean executeUpdate() throws SQLException;
 }

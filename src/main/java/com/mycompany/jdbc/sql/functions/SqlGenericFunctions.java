@@ -1,15 +1,17 @@
 package com.mycompany.jdbc.sql.functions;
 
+import com.mycompany.jdbc.activerecord.MappingColumn;
+
 /**
  *
  * @author DELL
  */
 public class SqlGenericFunctions
-        implements AbstractSQLGenericFunctions {
+        implements AbstractSqlGenericFunctions {
 
-    private final StringBuilder result;
+    private StringBuilder result;
 
-    private SqlGenericFunctions() {
+    public SqlGenericFunctions() {
         result = new StringBuilder();
     }
 
@@ -18,144 +20,145 @@ public class SqlGenericFunctions
     }
 
     @Override
-    public String toString() {
+    public String getResult() {
         return result.toString();
     }
 
     @Override
-    public AbstractSQLGenericFunctions abs(String number) {
+    public AbstractSqlGenericFunctions abs(String number) {
         result.append("ABS(").append(number).append(")");
         return this;
     }
 
     @Override
-    public AbstractSQLGenericFunctions abs(int number) {
+    public AbstractSqlGenericFunctions abs(int number) {
         return abs(String.valueOf(number));
     }
 
     @Override
-    public AbstractSQLGenericFunctions acos(String number) {
+    public AbstractSqlGenericFunctions acos(String number) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public AbstractSQLGenericFunctions acos(float number) {
+    public AbstractSqlGenericFunctions acos(float number) {
         return acos(String.valueOf(number));
     }
 
     @Override
-    public AbstractSQLGenericFunctions asin(String number) {
+    public AbstractSqlGenericFunctions asin(String number) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public AbstractSQLGenericFunctions asin(float number) {
+    public AbstractSqlGenericFunctions asin(float number) {
         return asin(String.valueOf(number));
     }
 
     @Override
-    public AbstractSQLGenericFunctions atan(String number) {
+    public AbstractSqlGenericFunctions atan(String number) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public AbstractSQLGenericFunctions atan(float number) {
+    public AbstractSqlGenericFunctions atan(float number) {
         return atan(String.valueOf(number));
     }
 
     @Override
-    public AbstractSQLGenericFunctions atan2(String number1, String number2) {
+    public AbstractSqlGenericFunctions atan2(String number1, String number2) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public AbstractSQLGenericFunctions atan2(float number1, float number2) {
+    public AbstractSqlGenericFunctions atan2(float number1, float number2) {
         return atan2(String.valueOf(number1), String.valueOf(number2));
     }
 
     @Override
-    public AbstractSQLGenericFunctions avg(String number) {
+    public AbstractSqlGenericFunctions avg(String number) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public AbstractSQLGenericFunctions avg(double number) {
+    public AbstractSqlGenericFunctions avg(double number) {
         return avg(String.valueOf(number));
     }
 
     @Override
-    public AbstractSQLGenericFunctions ceiling(String number) {
+    public AbstractSqlGenericFunctions ceiling(String number) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public AbstractSQLGenericFunctions ceiling(double number) {
+    public AbstractSqlGenericFunctions ceiling(double number) {
         return ceiling(String.valueOf(number));
     }
 
     @Override
-    public AbstractSQLGenericFunctions cos(String number) {
+    public AbstractSqlGenericFunctions cos(String number) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public AbstractSQLGenericFunctions cos(float number) {
+    public AbstractSqlGenericFunctions cos(float number) {
         return cos(String.valueOf(number));
     }
 
     @Override
-    public AbstractSQLGenericFunctions cot(String number) {
+    public AbstractSqlGenericFunctions cot(String number) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public AbstractSQLGenericFunctions cot(float number) {
+    public AbstractSqlGenericFunctions cot(float number) {
         return cot(String.valueOf(number));
     }
 
     @Override
-    public AbstractSQLGenericFunctions degrees(String number) {
+    public AbstractSqlGenericFunctions degrees(String number) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public AbstractSQLGenericFunctions degrees(double number) {
+    public AbstractSqlGenericFunctions degrees(double number) {
         return degrees(String.valueOf(number));
     }
 
     @Override
-    public AbstractSQLGenericFunctions exp(String number) {
+    public AbstractSqlGenericFunctions exp(String number) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public AbstractSQLGenericFunctions exp(float number) {
+    public AbstractSqlGenericFunctions exp(float number) {
         return exp(String.valueOf(number));
     }
 
     @Override
-    public AbstractSQLGenericFunctions floor(String number) {
+    public AbstractSqlGenericFunctions floor(String number) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public AbstractSQLGenericFunctions floor(double number) {
+    public AbstractSqlGenericFunctions floor(double number) {
         return floor(String.valueOf(number));
     }
 
     @Override
-    public AbstractSQLGenericFunctions ascii(String str) {
+    public AbstractSqlGenericFunctions ascii(String str) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public AbstractSQLGenericFunctions cast(String expression) {
+    public AbstractSqlGenericFunctions cast(String expression) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public AbstractSQLGenericFunctions count(String expression) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public AbstractSqlGenericFunctions count() {
+        result = new StringBuilder().append("count(\'*\')");
+        return this;
     }
 
 }

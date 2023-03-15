@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SQLColumn extends AbstractSQLElement {
+public class SqlColumn extends AbstractSqlElement {
 
     private final Connection connection;
     private ResultSet resultSet;
@@ -17,15 +17,15 @@ public class SQLColumn extends AbstractSQLElement {
     private String columnName;
     private String[] dataType;
 
-    public SQLColumn(SQLTable table, String columnName)
+    public SqlColumn(SqlTable table, String columnName)
             throws SQLException {
-        if (checkExistSubElement(table, columnName)) {
+//        if (checkExistSubElement(table, columnName)) {
             this.connection = table.getConnection();
             this.tableName = table.getElementName();
             this.columnName = columnName;
-        } else {
-            throw new SQLException("This column does not exist in your table.");
-        }
+//        } else {
+//            throw new SQLException("This column does not exist in your table.");
+//        }
     }
 
     @Override
@@ -52,7 +52,7 @@ public class SQLColumn extends AbstractSQLElement {
                 dataType[i] = resultSetMetaData.getColumnClassName(colIndex);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(SQLColumn.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SqlColumn.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

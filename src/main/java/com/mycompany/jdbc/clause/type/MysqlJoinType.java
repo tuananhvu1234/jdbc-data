@@ -10,7 +10,7 @@ public enum MysqlJoinType implements JoinType {
      */
     INNER,
     CROSS,
-    //    STRAIGHT_JOIN,
+    STRAIGHT_JOIN,
     /**
      * left outer join
      */

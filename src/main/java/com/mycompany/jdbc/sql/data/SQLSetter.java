@@ -1,123 +1,121 @@
 package com.mycompany.jdbc.sql.data;
 
 import java.sql.Connection;
-import com.mycompany.jdbc.sql.elements.SQLDatabase;
 
 /**
+ * Thiết lập connection, sql statement, command parameter.<p>
+ * Nhận vào column setter và row setter để hoàn thiện điều kiện
  *
  * @author
  */
 public class SqlSetter {
 
-    // Singleton Pattern
-    // Hạn chế tiếp cận bằng constructor
-    private SqlSetter() {
-    }
-
-    // Tạo connection
-    private static Connection connection = null;
-
-    // Thiết lập giá trị cho connection
-    public static SqlSetter using(SQLDatabase schema) {
-        SqlSetter.connection = schema.getConnection();
-        return new SqlSetter();
-    }
-
-    public static SqlSetter using(Connection connection) {
-        SqlSetter.connection = connection;
-        return new SqlSetter();
-    }
-
-    // Tạo biến lưu trữ câu lệnh sql
+    // Requirement Field
+    // Tạo biến lưu giá trị connection
+    private Connection connection = null;
+    // Câu lệnh sql cần thực hiện
     private String SQLStatement = "";
-
-    // Thiết lập câu lệnh sql.
-    public SqlSetter setSQLStatement(String sql) {
-        this.SQLStatement = sql;
-        return new SqlSetter();
-    }
-
-    // Biến lưu giữ các giá trị cần thiết lập
+    // Non-Requirement Field
+    // Các giá trị cần thiết lập cho câu sql
     private Object[] preparedStatementValues = new Object[]{};
 
-    public SqlSetter setPreparedStatementValues(Object[] preparedStatementValues) {
-        this.preparedStatementValues = preparedStatementValues;
-        return new SqlSetter();
+    private TableCondition tableCondition = null;
+
+    // Constructors
+    public SqlSetter(Connection conn, String sql, TableCondition conditions, Object... parameters) {
+        this.setConnection(conn);
+        this.setSqlStatement(sql);
+        this.tableCondition = conditions;
+        this.setCommandParameters(parameters);
     }
 
-    // Tổng số cột cần lấy ra
-    private int totalColumns = 0;
-
-    public SqlSetter setTotalColumns(int totalColumns) {
-        this.totalColumns = totalColumns;
-        return new SqlSetter();
+    public SqlSetter(Connection conn, String sql, Object... parameters) {
+        this(conn, sql, null, parameters);
     }
 
-    // Vị trí các cột cần lấy ra
-    private int[] columnsIndex = new int[]{};
-
-    public SqlSetter setColumnsIndex(int[] columnsIndex) {
-        this.columnsIndex = columnsIndex;
-        return new SqlSetter();
+    public SqlSetter(Connection conn, String sql, TableCondition conditions) {
+        this(conn, sql, conditions, new Object[]{});
     }
 
-    // Tên các cột cần lấy ra.
-    private String[] columnNames = new String[]{};
-
-    public SqlSetter setColumnNames(String[] columnNames) {
-        this.columnNames = columnNames;
-        return new SqlSetter();
+    public SqlSetter(Connection conn, String sql) {
+        this(conn, sql, null, new Object[]{});
     }
 
-    // Tổng số dòng cần lây ra.
-    // Nếu nhỏ hơn 0 thì sẽ lấy tất cả.
-    private int totalRows = -1;
-
-    public SqlSetter setTotalRows(int totalRows) {
-        this.totalRows = totalRows;
-        return new SqlSetter();
+    public SqlSetter(Connection conn, TableCondition conditions) {
+        this(conn, "select * from " + conditions.getTableName(), conditions, new Object[]{});
     }
 
-    // Vị trí dòng đầu lấy ra
-    // Nếu nhỏ hơn hoặc bằng 0 thì sẽ lấy từ 0
-    private int offsetRow = 0;
-
-    public SqlSetter setOffsetRow(int offsetRow) {
-        this.offsetRow = offsetRow;
-        return new SqlSetter();
+    private void setConnection(Connection conn) {
+        if (conn == null) {
+            throw new NullPointerException();
+        }
+        this.connection = conn;
     }
 
-    // Các method getter sẽ chỉ cho phép các class trong package sử dụng.
-    Connection getConnection() {
-        return connection;
+    public final SqlSetter setSqlStatement(String sql) {
+        if (sql == null || sql.isBlank() == true) {
+            throw new NullPointerException("Sql statement cannot be null or empty or contain only spaces!");
+        }
+        this.SQLStatement = sql;
+        return this;
     }
 
-    String getSQLStatement() {
-        return SQLStatement;
+    public final SqlSetter setCommandParameters(Object... parameters) {
+        for (Object value : parameters) {
+            if (value == null || String.valueOf(value).isBlank() == true) {
+                throw new NullPointerException("");
+            }
+        }
+        this.preparedStatementValues = parameters;
+        return this;
     }
 
-    Object[] getPreparedStatementValues() {
-        return preparedStatementValues;
+    // Lấy giá trị connection
+    protected Connection getConnection() {
+        return this.connection;
     }
 
-    int getTotalColumns() {
-        return totalColumns;
+    // Lấy giá trị câu lệnh sql
+    protected String getSqlStatement() {
+        return this.SQLStatement;
     }
 
-    int[] getColumnsIndex() {
-        return columnsIndex;
+    // 
+    protected Object[] getPreparedStatementValues() {
+        return this.preparedStatementValues;
     }
 
-    String[] getColumnNames() {
-        return columnNames;
+    public SqlSetter tableConditions(TableCondition conditions) {
+        this.tableCondition = conditions;
+        return this;
     }
 
-    int getTotalRows() {
-        return totalRows;
+    public SqlSetter columnConditions(ColumnCondition conditions) {
+        if (tableCondition == null) {
+            this.tableCondition = new TableCondition();
+        }
+        tableCondition.columnConditions(conditions);
+        return this;
     }
 
-    int getOffsetRow() {
-        return offsetRow;
+    public SqlSetter rowConditions(RowCondition conditions) {
+        if (tableCondition == null) {
+            this.tableCondition = new TableCondition();
+        }
+        tableCondition.rowConditions(conditions);
+        return this;
+    }
+
+    protected TableCondition getTableCondtions() {
+        return tableCondition;
+    }
+
+    protected ColumnCondition getColumnConditions() {
+        return tableCondition.getColumnConditions();
+    }
+
+    protected RowCondition getRowConditions() {
+        return tableCondition.getRowConditions();
     }
 
 }

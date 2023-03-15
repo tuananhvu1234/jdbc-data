@@ -7,9 +7,9 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SQLTable extends AbstractSQLElement {
+public class SqlTable extends AbstractSqlElement {
 
-    private final Connection connection;
+    private Connection connection;
     private ResultSet resultSet;
     private ResultSetMetaData resultSetMetaData;
 
@@ -18,14 +18,17 @@ public class SQLTable extends AbstractSQLElement {
     int totalColumns;
     private String[] listColumnNames = new String[]{};
 
-    public SQLTable(SQLDatabase database, String tableName)
-            throws SQLException {
+    public SqlTable() {
+    }
+
+    public SqlTable(SqlDatabase database, String tableName) {
         this.connection = database.getConnection();
-        if (checkExistSubElement(database, tableName) == true) {
-            this.tableName = tableName;
-        } else {
-            throw new SQLException("This table does not exist in your database.");
-        }
+        this.tableName = tableName;
+    }
+
+    @Override
+    public String toString() {
+        return tableName;
     }
 
     @Override
@@ -53,7 +56,7 @@ public class SQLTable extends AbstractSQLElement {
                 colIndex++;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(SQLTable.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SqlTable.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

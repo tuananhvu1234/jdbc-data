@@ -6,6 +6,6 @@ package com.mycompany.jdbc.statement.builder.query;
  */
 public interface QueryStatementFormat {
 
-    public static final String FORMAT = "SELECT @{selectExpr} FROM @{tableReferences}";
+    public static final String NORMAL_FORMAT = "SELECT @{selectExpr} FROM @{tableReferences}";
 
 }

@@ -1,5 +1,6 @@
-package com.mycompany.jdbc.clause.builder;
+package com.mycompany.jdbc.clause;
 
+import com.mycompany.jdbc.operator.SqlOperators;
 import com.mycompany.jdbc.clause.type.JoinType;
 
 /**
@@ -9,7 +10,7 @@ import com.mycompany.jdbc.clause.type.JoinType;
 public interface AbstractJoinClause {
 
     public static final String FORMAT
-            = "@{joinType} @{tableFactor} ON @{searchCondition}";
+            = "@{tableFactor} @{joinType} @{tableFactor} ON @{searchCondition}";
 
     /**
      * Custom join

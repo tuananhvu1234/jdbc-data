@@ -1,123 +1,236 @@
 package com.mycompany.jdbc.statement.builder.query;
 
-import com.mycompany.jdbc.clause.builder.AliasClause;
+import com.mycompany.jdbc.activerecord.MappedColumn;
+import com.mycompany.jdbc.activerecord.MappedTable;
+import com.mycompany.jdbc.clause.AliasClause;
+import com.mycompany.jdbc.clause.AliasMappedTable;
+import com.mycompany.jdbc.clause.JoinClause;
+import com.mycompany.jdbc.clause.JoinMappedTable;
 import com.mycompany.jdbc.helper.StringConvertor;
-import com.mycompany.jdbc.sql.functions.AbstractMysqlFunctions;
-import com.mycompany.jdbc.sql.functions.AbstractSQLGenericFunctions;
+import com.mycompany.jdbc.operator.EqualMappedColumn;
+import com.mycompany.jdbc.sql.functions.SqlGenericFunctions;
+import java.lang.reflect.InvocationTargetException;
+import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import com.mycompany.jdbc.sql.functions.AbstractSqlGenericFunctions;
 
 /**
  *
  * @author DELL
+ * @param <T>
  */
-public class MysqlQueryBuilder
-        implements AbstractMysqlQueryBuilder {
+public class MysqlQueryBuilder<T extends MappedTable> //        implements AbstractMysqlQueryBuilder
+{
+
+    private static final class MysqlQueryHelper {
+
+        private static String prepared(String value) {
+            if (value == null || value.isEmpty() == true) {
+                return value;
+            }
+            StringBuilder builder = new StringBuilder(value);
+            if (value.startsWith("`") == false) {
+                builder.insert(0, "`");
+            }
+            if (value.endsWith("`") == false) {
+                builder.append("`");
+            }
+            return builder.toString();
+        }
+
+        private static String preparedStatement(String value) {
+            if (value == null || value.isEmpty() == true) {
+                return value;
+            }
+            StringBuilder builder = new StringBuilder(value);
+            if (value.startsWith("\'") == false) {
+                builder.insert(0, "\'");
+            }
+            if (value.endsWith("\'") == false) {
+                builder.append("\'");
+            }
+            return builder.toString();
+        }
+    }
 
     private final StringBuilder statement;
 
-    private String[] selectExpressions;
-    private String table;
+    private String[] listColumns;
+    private String selectFunc;
+
+    private String tableName;
+    private String tableAliasName;
+
+    private String joinedTable;
+    private String joinedTableName;
+    private String joinedTableAliasName;
 
     public MysqlQueryBuilder() {
-        statement = new StringBuilder(QueryStatementFormat.FORMAT);
+        statement = new StringBuilder(QueryStatementFormat.NORMAL_FORMAT);
     }
 
-    public String preparedFormat(String str) {
-        if (str == null || str.isEmpty() == true) {
-            return str;
+    private String getColumnName(String tblName, String colName) {
+        String colNameForm = "@{table}.@{colName}";
+
+        if (AliasClause.isAliasFormat(colName) == true) {
+            colNameForm += " AS @{aliasName}";
+
+            String oriColName = AliasClause.getOriginName(colName);
+
+            String result = StringConvertor.convertKeyToValue(colNameForm,
+                    new String[]{"@{table}", "@{colName}"},
+                    new String[]{tblName, MysqlQueryHelper.prepared(oriColName)});
+
+            String aliColName = AliasClause.getAliasName(colName);
+
+            return StringConvertor.convertOneString(result,
+                    "@{aliasName}", MysqlQueryHelper.prepared(aliColName));
+        } else {
+            return StringConvertor.convertKeyToValue(colNameForm,
+                    new String[]{"@{table}", "@{colName}"},
+                    new String[]{tblName, MysqlQueryHelper.prepared(colName)});
         }
-        StringBuilder builder = new StringBuilder(str);
-        if (str.startsWith("`") == false) {
-            builder.insert(0, "`");
-        }
-        if (str.endsWith("`") == false) {
-            builder.append("`");
-        }
-        return builder.toString();
     }
 
-    public String completeColumnName(String tblName, String[] columns) {
-        StringBuilder builder = new StringBuilder();
-        if (columns.length == 1) {
-            if (StringConvertor.convertEveryString(columns[0], " ", "")
-                    .equals("*") == true) {
-                builder.append(AliasClause.getAliasName(tblName));
-                builder.append(".").append("*");
-                return builder.toString();
-            }
+    private String getSelectExpression(String colName) {
+        if (tableName == null || tableName.isEmpty() == true) {
+            throw new NullPointerException("Invalid table name");
         }
-        if (tblName != null && tblName.isEmpty() == false) {
-            for (int i = 0; i < columns.length; i++) {
-                if (StringConvertor.convertEveryString(columns[i], " ", "")
-                        .equals("*") == true) {
-                    return completeColumnName(tblName, new String[]{"*"});
-                }
-                builder.append(AliasClause.getAliasName(tblName));
-                builder.append(".").append(preparedFormat(columns[i]));
-                if (i < columns.length - 1) {
-                    builder.append(", ");
-                }
+        if (tableAliasName != null && tableAliasName.isEmpty() == false) {
+            return getColumnName(tableAliasName, colName);
+        } else {
+            return getColumnName(tableName, colName);
+        }
+    }
+
+    private String[] convertArrayColumn(MappedColumn[] arrColumns) {
+        LinkedList<String> list = new LinkedList<>();
+        for (MappedColumn col : arrColumns) {
+            list.add(col.getMappedColumnName());
+        }
+        return list.toArray(String[]::new);
+    }
+
+    public String getSelectExpressions() {
+        if (selectFunc != null && selectFunc.isEmpty() == false) {
+            return this.selectFunc;
+        }
+        if (listColumns != null && listColumns.length > 0) {
+            LinkedList<String> list = new LinkedList<>();
+            for (String col : listColumns) {
+                list.add(getSelectExpression(col));
             }
-            return builder.toString();
+            return String.join(", ", list);
         }
         return null;
     }
 
-    public String completeStatement() {
-        return StringConvertor.convertKeyToValue(statement.toString(),
-                new String[]{
-                    new StringBuilder().append("@{selectExpr}->")
-                            .append(completeColumnName(table, selectExpressions))
-                            .toString(),
-                    new StringBuilder().append("@{tableReferences}->")
-                            .append(table)
-                            .toString()
-                });
+    private String getTableReferences() {
+        if (joinedTable != null && joinedTable.isEmpty() == false) {
+            return joinedTable;
+        }
+        if (tableName == null || tableName.isEmpty() == true) {
+            throw new NullPointerException("Invalid table name");
+        }
+        if (tableAliasName != null && tableAliasName.isEmpty() == false) {
+            return AliasClause.as(tableName, tableAliasName).getResult();
+        }
+        return tableName;
     }
 
-    @Override
     public String get() {
-        return completeStatement();
+        return StringConvertor.convertKeyToValue(statement.toString(),
+                new String[]{"@{selectExpr}", "@{tableReferences}"},
+                new String[]{getSelectExpressions(), getTableReferences()}
+        );
     }
 
-    @Override
-    public AbstractQueryBuilder select(String[] selectExpressions) {
-        this.selectExpressions = selectExpressions;
-        return this;
-    }
-
-    @Override
-    public AbstractQueryBuilder select(AbstractSQLGenericFunctions expression) {
-        System.out.println(expression);
-        return this;
-    }
-
-    @Override
-    public AbstractQueryBuilder select(AbstractMysqlFunctions expression) {
-        System.out.println(expression);
-        return this;
-    }
-
-    @Override
-    public AbstractQueryBuilder from(String tableReferences) {
-        if (AliasClause.isAliasFormat(tableReferences) == true) {
-            this.table = AliasClause.as(
-                    preparedFormat(AliasClause.getOriginName(tableReferences)),
-                    preparedFormat(AliasClause.getAliasName(tableReferences))
-            ).toString();
-        } else {
-            this.table = preparedFormat(tableReferences);
+    private MysqlQueryBuilder setSelectAllColumn(
+            String nameOfTable, Class<T> classOfTable
+    ) {
+        this.tableName = MysqlQueryHelper.prepared(nameOfTable);
+        try {
+            T obj = (T) classOfTable.getDeclaredConstructor().newInstance();
+            this.listColumns = convertArrayColumn(obj.ALL());
+        } catch (NoSuchMethodException | SecurityException | InstantiationException
+                | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            Logger.getLogger(MysqlQueryBuilder.class.getName()).log(Level.SEVERE, null, ex);
         }
         return this;
     }
 
-    @Override
-    public AbstractQueryBuilder join(String joinedTable) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public static final class SecondMysqlQueryBuilder {
+
+        public MysqlQueryBuilder from(MappedTable tableReferences) {
+            return new MysqlQueryBuilder().setSelectAllColumn(
+                    tableReferences.getMappedTableName(),
+                    tableReferences.getClass()
+            );
+        }
     }
 
-    @Override
-    public AbstractQueryBuilder on(String searchCondition) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    /**
+     * Chỉ hỗ trợ cho tên bảng không có tên thay thế.
+     *
+     * @return class cung cấp method 'from' đặc biệt.
+     */
+    public SecondMysqlQueryBuilder select() {
+        return new SecondMysqlQueryBuilder();
     }
 
+    public MysqlQueryBuilder selectFrom(MappedTable tableReferences) {
+        return new SecondMysqlQueryBuilder().from(tableReferences);
+    }
+
+    public MysqlQueryBuilder select(MappedColumn[] listColumns) {
+        this.listColumns = convertArrayColumn(listColumns);
+        return this;
+    }
+
+    public MysqlQueryBuilder select(AbstractSqlGenericFunctions expression) {
+        this.selectFunc = expression.getResult();
+        return this;
+    }
+
+    public MysqlQueryBuilder selectCount() {
+        return select(SqlGenericFunctions.call().count());
+    }
+
+    public MysqlQueryBuilder selectCountAs(String aliasName) {
+        String expr = AliasClause.as(
+                SqlGenericFunctions.call().count().getResult(),
+                MysqlQueryHelper.prepared(aliasName)
+        ).getResult();
+        this.selectFunc = expr;
+        return this;
+    }
+
+    public MysqlQueryBuilder from(MappedTable tableReferences) {
+        this.tableName = MysqlQueryHelper.prepared(tableReferences.getMappedTableName());
+        return this;
+    }
+
+    public MysqlQueryBuilder from(AliasMappedTable aliasTableReferences) {
+        this.tableName = MysqlQueryHelper.prepared(aliasTableReferences.getTableName());
+        this.tableAliasName = MysqlQueryHelper.prepared(aliasTableReferences.getAliasName());
+        return this;
+    }
+
+    public MysqlQueryBuilder from(JoinMappedTable joinedTable) {
+        this.tableName = MysqlQueryHelper.prepared(joinedTable.getLeftTable());
+        this.joinedTableName = MysqlQueryHelper.prepared(joinedTable.getRightTable());
+        String leftCol = MysqlQueryHelper.prepared(joinedTable.getLeftColumn());
+        String rightCol = MysqlQueryHelper.prepared(joinedTable.getRightColumn());
+        this.joinedTable = JoinClause.join(joinedTable.getJoinType(), tableName, joinedTableName)
+                .on(new EqualMappedColumn(leftCol, rightCol)).getResult();
+        return this;
+    }
+//    public AbstractQueryBuilder join(String joinedTable) {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//    }
+//
+//    public AbstractQueryBuilder on(String searchCondition) {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//    }
 }

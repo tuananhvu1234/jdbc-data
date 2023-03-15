@@ -8,6 +8,6 @@ import com.mycompany.jdbc.sql.functions.AbstractMysqlFunctions;
  */
 public interface AbstractMysqlQueryBuilder extends AbstractQueryBuilder {
 
-    public AbstractQueryBuilder select(AbstractMysqlFunctions expression);
+//    public AbstractQueryBuilder select(AbstractMysqlFunctions expression);
 
 }

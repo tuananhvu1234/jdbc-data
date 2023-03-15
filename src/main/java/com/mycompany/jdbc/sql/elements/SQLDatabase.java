@@ -16,14 +16,14 @@ import java.util.logging.Logger;
  *
  * @author
  */
-public class SQLDatabase extends AbstractSQLElement {
+public class SqlDatabase extends AbstractSqlElement {
 
-    private SQLDatabase() {
+    private SqlDatabase() {
     }
 
     private static class SQLDatabaseHolder {
 
-        private static final SQLDatabase INSTANCE = new SQLDatabase();
+        private static final SqlDatabase INSTANCE = new SqlDatabase();
     }
 
     private static Connection connection;
@@ -32,12 +32,12 @@ public class SQLDatabase extends AbstractSQLElement {
 
     private final Map<Integer, String> listTableNames = new HashMap<>();
 
-    public static SQLDatabase connect(Connection con) {
+    public static SqlDatabase connect(Connection con) {
         connection = con;
         try {
             databaseMetaData = connection.getMetaData();
         } catch (SQLException ex) {
-            Logger.getLogger(SQLDatabase.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SqlDatabase.class.getName()).log(Level.SEVERE, null, ex);
         }
         return SQLDatabaseHolder.INSTANCE;
     }
@@ -46,12 +46,12 @@ public class SQLDatabase extends AbstractSQLElement {
         try {
             resultSet.close();
         } catch (SQLException ex) {
-            Logger.getLogger(SQLDatabase.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SqlDatabase.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             connection.close();
         } catch (SQLException ex) {
-            Logger.getLogger(SQLDatabase.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SqlDatabase.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             connection = null;
         }
@@ -67,7 +67,7 @@ public class SQLDatabase extends AbstractSQLElement {
         try {
             return connection.getCatalog();
         } catch (SQLException ex) {
-            Logger.getLogger(SQLDatabase.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SqlDatabase.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -82,7 +82,7 @@ public class SQLDatabase extends AbstractSQLElement {
                 index++;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(SQLDatabase.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SqlDatabase.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
