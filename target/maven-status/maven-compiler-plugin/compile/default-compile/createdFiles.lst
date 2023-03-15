@@ -33,7 +33,6 @@ com\noproject\jdbc\statement\builder\MysqlStatementBuilder.class
 com\noproject\jdbc\TestClass.class
 com\noproject\jdbc\RoleModel.class
 com\noproject\jdbc\activerecord\MappedTable.class
-com\noproject\jdbc\activerecord\MappedTable$1.class
 com\noproject\jdbc\sql\type\StatementType.class
 com\noproject\jdbc\TestAnnotationType.class
 com\noproject\jdbc\clause\JoinClause.class
@@ -42,12 +41,10 @@ Database\jdbc\JDBCConnect.class
 com\noproject\jdbc\operator\Operator.class
 com\noproject\jdbc\sql\elements\AbstractSqlElement.class
 com\noproject\jdbc\clause\JoinMappedTable.class
-com\noproject\jdbc\sql\elements\SqlDatabase$1.class
 com\noproject\jdbc\Tables.class
 com\noproject\jdbc\clause\AliasMappedTable.class
 com\noproject\jdbc\activerecord\MappedTable$OnMappedTable.class
 com\noproject\jdbc\statement\builder\query\MysqlQueryBuilder.class
-com\noproject\jdbc\clause\JoinClause$1.class
 com\noproject\jdbc\sql\data\MapToColumn.class
 com\noproject\jdbc\clause\Clause.class
 com\noproject\jdbc\clause\AliasClause.class
