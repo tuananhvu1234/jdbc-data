@@ -36,8 +36,8 @@ public class RowCondition {
         return this;
     }
 
-    public RowCondition countFrom(int value) {
-        this.countFrom = value;
+    public RowCondition firstRowId(int rowId) {
+        this.countFrom = rowId;
         return this;
     }
 

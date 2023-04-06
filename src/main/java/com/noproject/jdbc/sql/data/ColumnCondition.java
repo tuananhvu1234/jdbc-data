@@ -51,6 +51,7 @@ public class ColumnCondition {
     private ResultSet /*                    */ resultSet = null;
     private final Map<Integer, String> listAllColumns = new LinkedHashMap<>();
 
+    // setter
     public ColumnCondition endsAt(int end) {
         if (end < 1) {
             throw new IndexOutOfBoundsException("ket thuc nho hon 1");
@@ -89,9 +90,9 @@ public class ColumnCondition {
 
     public ColumnCondition columns(String... names) {
         for (int i = 0; i < names.length; i++) {
-            if (names[i] == null || names[i].isBlank() == true) {
-                throw new NullPointerException("Invalid column name at position " + (i + 1) + "!");
-            }
+//            if (names[i] == null || names[i].isBlank() == true) {
+//                throw new NullPointerException("Invalid column name at position " + (i + 1) + "!");
+//            }
         }
         this.listColumnNames = Arrays.asList(names);
         return this;
@@ -104,6 +105,7 @@ public class ColumnCondition {
         this.resultSet = rs;
     }
 
+    // getter
     protected Map<Integer, String> getAllColumnsInTable() {
         try {
             final ResultSetMetaData rsmd = this.resultSet.getMetaData();
@@ -185,7 +187,7 @@ public class ColumnCondition {
         // Nếu tất cả cột trong khối tồn tại trong bảng thì return luôn bảng.
         if (listNameByBlock.size() == tableColumns.size()
                 && tableColumns.values().containsAll(listNameByBlock)) {
-            return tableColumns.values().stream().toList();
+//            return tableColumns.values().stream().toList();
         }
         // Nếu không thì qua đây.
         final List<String> listNameByNames = getListColumnNames(),
@@ -208,7 +210,7 @@ public class ColumnCondition {
         // Nếu tất cả các cột trong list mix có trong table thì return luôn table.
         if (listMixed.size() == tableColumns.size()
                 && tableColumns.values().containsAll(listMixed)) {
-            return tableColumns.values().stream().toList();
+//            return tableColumns.values().stream().toList();
         }
         // Nếu không thì xuống đây.
         // Với mỗi name trong list mix tồn tại trong table thì sẽ được thêm vào result.

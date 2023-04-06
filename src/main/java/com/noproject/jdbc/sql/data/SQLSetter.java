@@ -53,7 +53,7 @@ public class SqlSetter {
     }
 
     public final SqlSetter setSqlStatement(String sql) {
-        if (sql == null || sql.isBlank() == true) {
+        if (sql == null || sql.isEmpty()== true) {
             throw new NullPointerException("Sql statement cannot be null or empty or contain only spaces!");
         }
         this.SQLStatement = sql;
@@ -62,7 +62,7 @@ public class SqlSetter {
 
     public final SqlSetter setCommandParameters(Object... parameters) {
         for (Object value : parameters) {
-            if (value == null || String.valueOf(value).isBlank() == true) {
+            if (value == null || String.valueOf(value).isEmpty()== true) {
                 throw new NullPointerException("");
             }
         }

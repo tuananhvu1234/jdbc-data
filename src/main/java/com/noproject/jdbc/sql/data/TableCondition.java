@@ -3,6 +3,8 @@
  */
 package com.noproject.jdbc.sql.data;
 
+import com.noproject.jdbc.sql.annotations.MapToTable;
+
 /**
  *
  * @author DELL
@@ -19,7 +21,7 @@ public class TableCondition {
     }
 
     public TableCondition(String table) {
-        if (table == null || table.isBlank() == true) {
+        if (table == null || table.isEmpty()== true) {
             throw new NullPointerException();
         }
         this.tableName = table;
@@ -30,7 +32,7 @@ public class TableCondition {
             throw new NullPointerException();
         }
         MapToTable mapTable = (MapToTable) table.getAnnotation(MapToTable.class);
-        this.tableName = mapTable.name();
+        this.tableName = mapTable.value();
     }
 
     public TableCondition(ColumnCondition columnConditions, RowCondition rowConditions) {
@@ -39,7 +41,7 @@ public class TableCondition {
     }
 
     public TableCondition(String table, ColumnCondition columnConditions, RowCondition rowConditions) {
-        if (table == null || table.isBlank() == true) {
+        if (table == null || table.isEmpty()== true) {
             throw new NullPointerException();
         }
         this.tableName = table;
@@ -52,7 +54,7 @@ public class TableCondition {
             throw new NullPointerException();
         }
         MapToTable mapTable = (MapToTable) table.getAnnotation(MapToTable.class);
-        this.tableName = mapTable.name();
+        this.tableName = mapTable.value();
         this.columnCondition = columnConditions;
         this.rowCondition = rowConditions;
     }

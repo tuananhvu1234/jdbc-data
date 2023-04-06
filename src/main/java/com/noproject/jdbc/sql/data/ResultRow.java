@@ -38,11 +38,18 @@ public class ResultRow {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("rowId=").append(rowId);
-        builder.append(", data=");
-        builder.append(rowData.toString());
-        return builder.toString();
+        String resultJson
+                = "{"
+                + "\"rowId\":" + rowId + ","
+                + "\"data\": {"
+                + rowData.toString()
+                + "}"
+                + "}";
+//        StringBuilder builder = new StringBuilder();
+//        builder.append("rowId=").append(rowId);
+//        builder.append(", data=");
+//        builder.append(rowData.toString());
+        return resultJson;
     }
 
 }

@@ -1,30 +1,31 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ *
  */
 package com.noproject.jdbc;
 
-import com.noproject.jdbc.sql.data.MapToColumn;
-import com.noproject.jdbc.sql.data.MapToTable;
+import com.noproject.jdbc.sql.annotations.IdColumn;
+import com.noproject.jdbc.sql.annotations.MapToColumn;
+import com.noproject.jdbc.sql.annotations.MapToTable;
 import java.math.BigDecimal;
 
 /**
  *
  * @author DELL
  */
-@MapToTable(name = "service")
+@MapToTable("service")
 public class ServiceModel {
 
-    @MapToColumn(name = "service_id")
+    @IdColumn
+    @MapToColumn("service_id")
     private int serviceId;
 
-    @MapToColumn(name = "service_name")
+    @MapToColumn("service_name")
     private String serviceName;
 
-    @MapToColumn(name = "service_type")
+    @MapToColumn("service_type")
     private String serviceType;
 
-    @MapToColumn(name = "service_price")
+    @MapToColumn("service_price")
     private BigDecimal servicePrice;
 
     public int getServiceId() {

@@ -3,6 +3,7 @@
  */
 package com.noproject.jdbc.sql.data;
 
+import com.noproject.jdbc.helper.StringEditor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,26 +39,30 @@ public class ResultTable {
 
     public ResultRow getRow(int rowId) {
         Optional<ResultRow> optional = rows.stream().filter(row -> row.getRowId() == rowId).findFirst();
-        if (optional.isEmpty() == false) {
+        if (optional.isPresent() == true) {
             return optional.get();
         } else {
             return null;
         }
     }
 
+    private String resultJson = "";
+
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("table=").append(tableName);
-        builder.append("\ncolumns=").append(columns);
-        builder.append("\nsize=").append(rows.size());
-        builder.append("\nrows=");
-        StringJoiner joiner = new StringJoiner(",\n", "[\n", "\n]");
-        rows.stream().forEach(row -> {
-            joiner.add("\t" + row.toString());
-        });
-        builder.append(joiner.toString());
-        return builder.toString();
+        resultJson = StringEditor.convertOneString(resultJson, "@tableName", tableName);
+        StringJoiner joiner = new StringJoiner("\",\n    \"", "\"", "\"");
+        for (String column : columns) {
+            joiner.add(column);
+        }
+        resultJson = StringEditor.convertOneString(resultJson, "@listColuumns", joiner.toString());
+        joiner = new StringJoiner(",\n");
+        for (ResultRow row : rows) {
+            joiner.add(row.toString());
+        }
+        String join = joiner.toString();
+        resultJson = StringEditor.convertOneString(resultJson, "@listRows", join);
+        return resultJson;
     }
 
 }
