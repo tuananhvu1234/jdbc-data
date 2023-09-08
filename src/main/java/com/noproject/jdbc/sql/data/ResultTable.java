@@ -50,19 +50,20 @@ public class ResultTable {
 
     @Override
     public String toString() {
-        resultJson = StringEditor.convertOneString(resultJson, "@tableName", tableName);
-        StringJoiner joiner = new StringJoiner("\",\n    \"", "\"", "\"");
-        for (String column : columns) {
-            joiner.add(column);
-        }
-        resultJson = StringEditor.convertOneString(resultJson, "@listColuumns", joiner.toString());
-        joiner = new StringJoiner(",\n");
-        for (ResultRow row : rows) {
-            joiner.add(row.toString());
-        }
-        String join = joiner.toString();
-        resultJson = StringEditor.convertOneString(resultJson, "@listRows", join);
-        return resultJson;
+//        resultJson = StringEditor.convertOneString(resultJson, "@tableName", tableName);
+//        StringJoiner joiner = new StringJoiner("\",\n    \"", "\"", "\"");
+//        for (String column : columns) {
+//            joiner.add(column);
+//        }
+//        resultJson = StringEditor.convertOneString(resultJson, "@listColuumns", joiner.toString());
+//        joiner = new StringJoiner(",\n");
+//        for (ResultRow row : rows) {
+//            joiner.add(row.toString());
+//        }
+//        String join = joiner.toString();
+//        resultJson = StringEditor.convertOneString(resultJson, "@listRows", join);
+//        return resultJson;
+        return tableName + "\n" + rows.toString();
     }
 
 }

@@ -6,7 +6,7 @@ import java.util.List;
 
 public final class StringEditor {
 
-    private static class Memento extends BaseMemento<StringEditor>{
+    private static class Memento{
 
         private final List<String> updateHistory = new LinkedList<>();
         private int countUndo = 1;

@@ -11,8 +11,12 @@ import com.noproject.jdbc.sql.data.SqlExecutionAdapter;
 import com.noproject.jdbc.sql.data.SqlSetter;
 import com.noproject.jdbc.sql.data.TableCondition;
 import com.noproject.pattern.BaseMemento;
+import com.noproject.pattern.BaseObjectPool;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -41,7 +45,8 @@ public class Jdbc {
 //        System.out.println(testField.getGenericType().getTypeName());
 //        testField.set(test, 6);
 //        System.out.println(test.getTestField());
-//        Connection conn = JDBCConfig.getConnection();
+        Connection conn = JDBCConfig.getConnection();
+        System.out.println(conn.getCatalog());
 //        int pageNumber = 1, pageSize = 1;
 //        while (pageNumber > 0) {
 //            rowSet.skipRows(pageSize * (pageNumber - 1));
@@ -72,6 +77,9 @@ public class Jdbc {
 //            RoleModel obj = new ObjectMapper<>(RoleModel.class, row).getObject();
 //            System.out.println(obj);
 //        }
+//ver6
+// base ver
+//ver0
 //ver1
 //ver2
 //ver3
@@ -81,69 +89,6 @@ public class Jdbc {
         long start, end;
         System.out.println(start = System.currentTimeMillis());
 
-        BaseMemento<String> memento = new BaseMemento<>();
-        memento.save("ver1");
-        memento.save("ver2");
-        memento.save("ver3");
-        memento.save("ver4");
-        memento.save("ver5");
-        memento.restore("ver3");
-//        memento.save("ver3");
-        memento.undo();
-//        memento.undo();
-//        memento.undo();
-
-//        memento.save("a3.1");
-        memento.redo();
-        memento.undo();
-        System.out.println(memento.getAllSavedObject());
-        System.out.println(memento.getCurrentObject());
-//        memento.undo();
-//        memento.undo();
-//        memento.redo();
-//        memento.restore("a4");
-//        memento.redo();
-//        System.out.println(memento.getCurrentObject());
-//        String str = "0123456789";
-//        StringEditor editor = new StringEditor(str);
-//
-//        System.out.println("before remove = " + editor);
-//        System.out.println("remove 1st    = " + editor.remove("9"));
-//        System.out.println("remove 2nd    = " + editor.remove("8"));
-//        System.out.println("remove 3rd    = " + editor.remove("7"));
-//        System.out.println("remove 4th    = " + editor.remove("6"));
-////
-//        System.out.println("undo 1st      = " + editor.undo());
-//        System.out.println("redo 1st      = " + editor.redo());
-//        System.out.println("redo 2nd      = " + editor.redo());
-//        System.out.println("undo 2nd      = " + editor.undo());
-//        System.out.println("undo 3rd      = " + editor.undo());
-//        System.out.println("undo 4th      = " + editor.undo());
-//        System.out.println("undo 5th      = " + editor.undo());
-////
-//        System.out.println("redo 3rd      = " + editor.redo());
-//        System.out.println("redo 4th      = " + editor.redo());
-//        System.out.println("redo 5th      = " + editor.redo());
-//        
-//        System.out.println(editor.removeAll());
-//        System.out.println(editor.undo());
-//        System.out.println("delete = " + editor.delete("345"));
-//        System.out.println("undo = " + editor.undo());
-//        
-//        System.out.println("clear = " + editor.clear());
-//        System.out.println("undo = " + editor.undo());
-//        System.out.println("redo=" + editor.redo());
-//        editor.
-//        double number1 = 1.0E+2;
-//        double number2 = 21.05;
-//        double number3 = .5;
-//        float number4 = 2 / 3;
-//
-//        ResultJson json = new ResultJson();
-//        json.add(null);
-//        json.add(null);
-//        System.out.println(json.getJsonString());
-//
         System.out.println(end = System.currentTimeMillis());
         System.out.println((end - start) + " ms");
     }
